@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+
+const authRouter = require('./routes/auth');
 require('./db/mongoose');
 require('dotenv').config();
 
@@ -13,9 +15,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 //----- ROUTES MIDDLEWARE ------
-app.get('/', (req,res) => {
-    res.send('Welcome to CPF!');
-});
+app.use("/api/v1", authRouter);
 
 //----- CONNECTION TO MONGODB ---------
 const port = process.env.PORT || 5000;
