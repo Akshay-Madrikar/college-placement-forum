@@ -1,17 +1,17 @@
-const User = require('../models/user');
+const Student = require('../models/student');
 
-exports.userById = async (req, res, next, id) => {
+exports.studentById = async (req, res, next, id) => {
     try {
-        const user = await User.findById(id).exec();
-        if(!user) {
+        const student = await Student.findById(id).exec();
+        if(!student) {
             throw new Error();
         };
 
-        req.profile = user;
+        req.profile = student;
         next();
     } catch(error) {
         res.status(400).json({
-            error: 'No such user!'
+            error: 'No such student!'
         });
     };
 };
@@ -22,7 +22,7 @@ exports.readProfile = async (req, res) => {
         res.status(200).json(req.profile);
     } catch(error) {
         res.status(400).json({
-            error: 'No such user!'
+            error: 'No such student!'
         });
     };
 };

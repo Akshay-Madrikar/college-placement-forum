@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 const authRouter = require('./routes/auth');
-const userRouter = require('./routes/user');
+const studentRouter = require('./routes/student');
 require('./db/mongoose');
 require('dotenv').config();
 
@@ -17,7 +17,7 @@ app.use(cookieParser());
 
 //----- ROUTES MIDDLEWARE ------
 app.use("/api/v1", authRouter);
-app.use("/api/v1", userRouter);
+app.use("/api/v1", studentRouter);
 
 //----- CONNECTION TO MONGODB ---------
 const port = process.env.PORT || 5000;

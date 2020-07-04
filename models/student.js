@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcryptjs = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
+const studentSchema = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
@@ -43,42 +43,42 @@ const userSchema = new mongoose.Schema({
 });
 
 // Hash password before saving to database
-userSchema.pre('save', async function(next) {
-    const user = this;
+studentSchema.pre('save', async function(next) {
+    const student = this;
 
-    if(user.isModified('password')) {
-        user.password = await bcryptjs.hash(user.password, 8);
+    if(student.isModified('password')) {
+        student.password = await bcryptjs.hash(student.password, 8);
     }
     next();
 });
 
 // Remove specific field from response
-userSchema.methods.toJSON = function() {
-    const user = this;
-    const userObject = user.toObject()
+studentSchema.methods.toJSON = function() {
+    const student = this;
+    const studentObject = student.toObject()
 
-    delete userObject.password;
+    delete studentObject.password;
 
-    return userObject;
+    return studentObject;
 };
 
-// To find user by emailId
-userSchema.statics.findByCredentials = async(email, password) => {
-    const user = await User.findOne({ email });
+// To find student by emailId
+studentSchema.statics.findByCredentials = async(email, password) => {
+    const student = await Student.findOne({ email });
 
-    if(!user) {
+    if(!student) {
         throw new Error();
     };
 
-    const isMatch = await bcryptjs.compare(password, user.password);
+    const isMatch = await bcryptjs.compare(password, student.password);
     if(!isMatch) {
         throw new Error();
     };
 
-    return user;
+    return student;
 };
 
-const User = mongoose.model('User', userSchema);
+const Student = mongoose.model('Student', studentSchema);
 
-module.exports = User;
+module.exports = Student;
 

@@ -1,15 +1,15 @@
 const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 
-const User = require('../models/user');
+const Student = require('../models/student');
 require('dotenv').config();
 
 exports.signup = async(req, res) => {
     try {
-        const user = new User(req.body);
-        await user.save();
+        const student = new Student(req.body);
+        await student.save();
         res.status(201).json({
-            user
+            student
         });
     } catch (error) {
         res.status(400).json({
@@ -20,17 +20,17 @@ exports.signup = async(req, res) => {
 
 exports.signin = async(req, res) => {
     try {
-        const user = await User.findByCredentials(req.body.email, req.body.password);
-        const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
+        const student = await Student.findByCredentials(req.body.email, req.body.password);
+        const token = jwt.sign({ _id: student._id.toString() }, process.env.JWT_SECRET);
 
         // persist the token as 't in cookie with expiry date
         res.cookie('t', token, {
             expire: new Date() + 999
         });
 
-        const {_id, name, email, role} = user;
+        const {_id, name, email, role} = student;
         res.status(202).json({
-            user: {_id, name, email, role},
+            student: {_id, name, email, role},
             token
         });
     } catch (error) {
@@ -60,8 +60,8 @@ exports.requiredSignin = expressJwt({
 });
 
 exports.isAuth = (req, res, next) => {
-    let user = req.profile && req.auth && req.profile._id == req.auth._id;
-    if(!user) {
+    let student = req.profile && req.auth && req.profile._id == req.auth._id;
+    if(!student) {
         return res.status(401).json({
             error: 'Access denied'
         });
