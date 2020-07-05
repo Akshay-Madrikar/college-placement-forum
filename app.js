@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const authRouter = require('./routes/auth');
 const studentRouter = require('./routes/student');
 const industryRouter = require('./routes/industry');
+const departmentRouter = require('./routes/department');
 require('./db/mongoose');
 require('dotenv').config();
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use("/api/v1", authRouter);
 app.use("/api/v1", studentRouter);
 app.use("/api/v1", industryRouter);
+app.use("/api/v1", departmentRouter);
 
 //----- CONNECTION TO MONGODB ---------
 const port = process.env.PORT || 5000;
