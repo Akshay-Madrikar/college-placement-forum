@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const authRouter = require('./routes/auth');
 const studentRouter = require('./routes/student');
@@ -16,6 +17,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(cors());
 
 //----- ROUTES MIDDLEWARE ------
 app.use("/api/v1", authRouter);
