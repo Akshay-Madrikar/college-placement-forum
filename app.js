@@ -8,6 +8,8 @@ const authRouter = require('./routes/auth');
 const studentRouter = require('./routes/student');
 const industryRouter = require('./routes/industry');
 const departmentRouter = require('./routes/department');
+const companyRouter = require('./routes/comapny');
+const imageRouter = require('./utils/image_upload');
 require('./db/mongoose');
 require('dotenv').config();
 
@@ -22,8 +24,10 @@ app.use(cors());
 //----- ROUTES MIDDLEWARE ------
 app.use("/api/v1", authRouter);
 app.use("/api/v1", studentRouter);
+app.use("/api/v1", companyRouter);
 app.use("/api/v1", industryRouter);
 app.use("/api/v1", departmentRouter);
+app.use("/api/v1", imageRouter);
 
 //----- CONNECTION TO MONGODB ---------
 const port = process.env.PORT || 5000;

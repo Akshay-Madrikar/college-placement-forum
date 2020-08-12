@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { studentById } = require('../controllers/student')
+const { studentById } = require('../controllers/student');
 const { departmentById, create, read, update, remove, list } = require('../controllers/department');
 const { requiredSignin, isAuth, isAdmin } = require('../controllers/auth');
 
@@ -12,7 +12,7 @@ router.put('/department/:departmentId/:studentId', requiredSignin, isAuth, isAdm
 router.delete('/department/:departmentId/:studentId', requiredSignin, isAuth, isAdmin , remove);
 router.get('/departments', list);
 
-router.param('studentId', studentById)
+router.param('studentId', studentById);
 router.param('departmentId', departmentById);
 
 module.exports = router;
