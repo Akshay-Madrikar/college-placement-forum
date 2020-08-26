@@ -13,7 +13,7 @@ const companySchema = new mongoose.Schema({
         required: true,
         maxlength: 2000
     },
-    industry: {
+    industryName: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Industry',
         required: true

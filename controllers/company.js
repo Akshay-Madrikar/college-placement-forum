@@ -21,7 +21,9 @@ exports.read = async(req, res) => {
 
 exports.create = async(req, res) => {
     try {
-        const company = new Company(req.body);
+        const { formData, pic } = req.body;
+        const { name, description, industryName, openings, count_of_placed_students} = formData;
+        const company = new Company({ name, description, industryName, openings, count_of_placed_students, pic });
         await company.save();
         res.status(201).json({
             company
