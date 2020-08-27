@@ -34,3 +34,45 @@ exports.create = async(req, res) => {
         });
     }
 };
+
+exports.listBySearch = async (req, res) => {
+    try {
+        let order = req.body.order ? req.body.order : "desc";
+        let sortBy = req.body.sortBy ? req.body.sortBy : "_id";
+        let limit = req.body.limit ? parseInt(req.body.limit) : 100;
+        let skip = parseInt(req.body.skip);
+        let findArgs = {};
+     
+        for (let key in req.body.filters) {
+            if (req.body.filters[key].length > 0) {
+                if (key === "price") {
+                    // gte -  greater than price [0-10]
+                    // lte - less than
+                    findArgs[key] = {
+                        $gte: req.body.filters[key][0],
+                        $lte: req.body.filters[key][1]
+                    };
+                } else {
+                    findArgs[key] = req.body.filters[key];
+                }
+            }
+        }
+     
+        const companiesBySearch = await Company.find(findArgs)
+            .select("-pic")
+            .populate("industryName")
+            .sort([[sortBy, order]])
+            .skip(skip)
+            .limit(limit)
+            .exec();
+
+        res.status(200).json({
+            size: companiesBySearch.length,
+            companiesBySearch
+        });
+    } catch(error) {
+        res.status(400).json({
+            error: 'Companies not found!'
+        });
+    }
+};
