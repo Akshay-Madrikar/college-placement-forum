@@ -35,6 +35,28 @@ exports.create = async(req, res) => {
     }
 };
 
+exports.list = async (req ,res) => {
+    // by most_placed - /companies?sortBy=count_of_placed_students&order=desc&limit=4
+    // by arrivals - /companies?sortBy=createdAt&order=desc&limit=4
+    // if no params - /companies
+    try{
+        let order = req.query.order ? req.query.order : 'asc';
+        let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+        let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+    
+        const companies = await Company.find()
+                                .populate('industryName')
+                                .sort([[sortBy, order]])
+                                .limit(limit)
+                                .exec();
+        res.status(200).json({companies});
+    } catch(error) {
+        res.status(400).json({
+            error: 'Companies not found!'
+        });
+    } 
+};
+
 exports.listBySearch = async (req, res) => {
     try {
         let order = req.body.order ? req.body.order : "desc";
@@ -57,9 +79,8 @@ exports.listBySearch = async (req, res) => {
                 }
             }
         }
-     
+    
         const companiesBySearch = await Company.find(findArgs)
-            .select("-pic")
             .populate("industryName")
             .sort([[sortBy, order]])
             .skip(skip)
