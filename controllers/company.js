@@ -67,16 +67,7 @@ exports.listBySearch = async (req, res) => {
      
         for (let key in req.body.filters) {
             if (req.body.filters[key].length > 0) {
-                if (key === "price") {
-                    // gte -  greater than price [0-10]
-                    // lte - less than
-                    findArgs[key] = {
-                        $gte: req.body.filters[key][0],
-                        $lte: req.body.filters[key][1]
-                    };
-                } else {
                     findArgs[key] = req.body.filters[key];
-                }
             }
         }
     
@@ -95,5 +86,32 @@ exports.listBySearch = async (req, res) => {
         res.status(400).json({
             error: 'Companies not found!'
         });
+    }
+};
+
+exports.listSearch = async (req, res) => {
+    // To hold search and category values 
+    let query = {};
+    //assign search value to query.name
+    if(req.query.search) {
+        query.name = {
+            $regex: req.query.search,
+            $options: 'i'
+        }
+
+        //assign industry value to  query.industry
+        if(req.query.industry && req.query.industry !== 'All') {
+            query.industry = req.query.industry
+        }
+        
+        try {
+            //Now we'll find products based on search and category
+            const companies = await Company.find(query);
+            res.status(200).json({companies});
+        } catch (error) {
+            res.status(400).json({
+                error: 'Companies not found!'
+            });
+        }
     }
 };
