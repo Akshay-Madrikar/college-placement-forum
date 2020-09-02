@@ -2,7 +2,7 @@ const Company = require('../models/company');
 
 exports.companyById = async(req ,res, next, id) => {
     try{
-        const company = await Company.findById(id).populate('category').exec();
+        const company = await Company.findById(id).populate('industryName').exec();
         if(!company) {
             throw new Error();
         }
@@ -16,7 +16,7 @@ exports.companyById = async(req ,res, next, id) => {
 };
 
 exports.read = async(req, res) => {
-    return res.status(200).json(req.company);
+    return res.status(200).json({company: req.company});
 };
 
 exports.create = async(req, res) => {
@@ -90,9 +90,11 @@ exports.listBySearch = async (req, res) => {
 };
 
 exports.listSearch = async (req, res) => {
-    // To hold search and category values 
+    // To hold search and industry values 
     let query = {};
     //assign search value to query.name
+
+    console.log(req.query)
     if(req.query.search) {
         query.name = {
             $regex: req.query.search,
