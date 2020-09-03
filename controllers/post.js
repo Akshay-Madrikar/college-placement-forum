@@ -68,23 +68,62 @@ exports.list = async (req, res) => {
 
 exports.like = async (req, res) => {
     try {
-        const post = await Post.findById(req.post._id);
-        if(!post) {
-            throw new Error();
-        }
-    
-        // Check if the post has not yet been liked
-        if (post.likes.some(like => like.user.toString() === req.profile._id)) {
-            return res.status(400).json({ msg: 'Post already liked' });
-        }
-
-        post.likes.unshift({ user: req.profile._id });
-        await post.save();
-
-        return res.status(200).json(post.likes);
+        const post = await Post.findByIdAndUpdate(req.post._id, {
+            $push: { likes: req.profile._id }    // Push likes into particular posts
+        }, {
+            new: true    //To get updated data
+        })
+        .populate('comments.postedBy', '_id username')
+        .populate('postedBy', '_id username')
+        .exec()
+        
+        res.status(200).json(post)
     } catch(error) {
         res.status(400).json({
-            error: 'Posts not found'
+            error: 'Server error'
+        });
+    };
+};
+
+exports.unlike = async (req, res) => {
+    try {
+        const post = await Post.findByIdAndUpdate(req.post._id, {
+            $pull: { likes: req.profile._id }    // Pull likes from particular posts
+        }, {
+            new: true    //To get updated data
+        })
+        .populate('comments.postedBy', '_id username')
+        .populate('postedBy', '_id username')
+        .exec()
+
+        res.status(200).json(post)
+    } catch(error) {
+        res.status(400).json({
+            error: 'Server error'
+        });
+    };
+};
+
+exports.comment = async (req, res) => {
+    try {
+        const comment = {
+            text: req.body.text,
+            postedBy: req.profile._id
+        }
+
+        const post = await Post.findByIdAndUpdate(req.post._id, {
+            $push: { comments: comment }    // Push likes into particular posts
+        }, {
+            new: true    //To get updated data
+        })
+        .populate('comments.postedBy', '_id username')
+        .populate('postedBy', '_id username')
+        .exec();
+
+        res.status(200).json(post)
+    } catch(error) {
+        res.status(400).json({
+            error: 'Server error'
         });
     };
 };

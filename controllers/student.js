@@ -2,7 +2,7 @@ const Student = require('../models/student');
 
 exports.studentById = async (req, res, next, id) => {
     try {
-        const student = await Student.findById(id).exec();
+        const student = await Student.findById(id).select('-password').exec();
         if(!student) {
             throw new Error();
         };
