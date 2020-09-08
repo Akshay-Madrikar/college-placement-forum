@@ -2,7 +2,7 @@ const Post = require('../models/post');
 
 exports.postById = async(req ,res, next, id) => {
     try{
-        const post = await Post.findById(id).exec();
+        const post = await Post.findById(id).populate('postedBy').exec();
         if(!post) {
             throw new Error();
         }
@@ -17,8 +17,8 @@ exports.postById = async(req ,res, next, id) => {
 
 exports.create = async(req, res) => {
     try {
-        const { body, pic } = req.body;
-        const post = new Post({ body, pic, postedBy: req.profile });
+        const { text, pic } = req.body;
+        const post = new Post({ text, pic, postedBy: req.profile });
         await post.save();
         res.status(201).json({
             post,
@@ -53,7 +53,7 @@ exports.remove = async (req, res) => {
 
 exports.list = async (req, res) => {
     try {
-        const posts = await Post.find({}).sort({ createdAt: -1 });
+        const posts = await Post.find({}).sort({ createdAt: -1 }).populate('postedBy');
         if(!posts) {
             throw new Error();
         }
@@ -120,7 +120,7 @@ exports.comment = async (req, res) => {
         .populate('postedBy', '_id username')
         .exec();
 
-        res.status(200).json(post)
+        res.status(200).json({ comments: post.comments })
     } catch(error) {
         res.status(400).json({
             error: 'Server error'

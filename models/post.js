@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const postSchema = mongoose.Schema({
-    body: {
+    text: {
         type: String,
+        trim: true,
         required: true
     },
     pic: {
