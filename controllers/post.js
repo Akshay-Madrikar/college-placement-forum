@@ -2,7 +2,7 @@ const Post = require('../models/post');
 
 exports.postById = async(req ,res, next, id) => {
     try{
-        const post = await Post.findById(id).populate('postedBy').exec();
+        const post = await Post.findById(id).populate('postedBy').populate('comments.postedBy').exec();
         if(!post) {
             throw new Error();
         }
@@ -112,11 +112,11 @@ exports.comment = async (req, res) => {
         }
 
         const post = await Post.findByIdAndUpdate(req.post._id, {
-            $push: { comments: comment }    // Push likes into particular posts
+            $push: { comments: comment }    // Push COMMENTS into particular posts
         }, {
             new: true    //To get updated data
         })
-        .populate('comments.postedBy', '_id username')
+        .populate('comments.postedBy')
         .populate('postedBy', '_id username')
         .exec();
 
@@ -124,6 +124,33 @@ exports.comment = async (req, res) => {
     } catch(error) {
         res.status(400).json({
             error: 'Server error'
+        });
+    };
+};
+
+exports.removeComment = async (req, res) => {
+    try {
+        const post = await Post.findByIdAndUpdate(req.post._id, {
+            $pull: { 
+                comments: {
+                    _id: req.params.commentId
+                }
+            }    
+        }, {
+            new: true   
+        })
+        .sort({ createdAt: -1 })
+        .populate('comments.postedBy')
+        .populate('postedBy', '_id username')
+        .exec();
+
+        res.status(200).json({
+            comments: post.comments,
+            message: 'Comment deleted successfully!'
+        });
+    } catch(error) {
+        res.status(400).json({
+            error
         });
     };
 };

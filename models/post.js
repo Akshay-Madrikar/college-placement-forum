@@ -22,8 +22,11 @@ const postSchema = mongoose.Schema({
             postedBy: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Student'
+            },
+            date: {
+                type: Date,
+                default: Date.now
             }
-            
         }
     ],
     postedBy: {
