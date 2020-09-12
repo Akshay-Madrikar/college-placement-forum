@@ -2,7 +2,10 @@ const Company = require('../models/company');
 
 exports.companyById = async(req ,res, next, id) => {
     try{
-        const company = await Company.findById(id).populate('industryName').exec();
+        const company = await Company.findById(id)
+                                    .populate('industryName')
+                                    .populate('questions.submitted_by')
+                                    .exec();
         if(!company) {
             throw new Error();
         }
@@ -10,7 +13,7 @@ exports.companyById = async(req ,res, next, id) => {
         next();
     } catch(error) {
         res.status(404).json({
-            error: 'No such product!'
+            error: 'No such company!'
         });
     }
 };
@@ -55,6 +58,21 @@ exports.list = async (req ,res) => {
             error: 'Companies not found!'
         });
     } 
+};
+
+exports.listAll = async (req, res) => {
+    try {
+        const companies = await Company.find({});
+        if(!companies) {
+            throw new Error();
+        }
+
+        res.status(201).json(companies);
+    } catch(error) {
+        res.status(400).json({
+            error: 'Companies not found'
+        });
+    };
 };
 
 exports.listBySearch = async (req, res) => {
@@ -116,4 +134,30 @@ exports.listSearch = async (req, res) => {
             });
         }
     }
+};
+
+exports.addQuestion = async (req, res) => {
+    try {
+        const question = {
+            text: req.body.text,
+            submitted_by: req.profile._id
+        }
+
+        const company = await Company.findByIdAndUpdate(req.company._id, {
+            $push: { questions: question } 
+        }, {
+            new: true
+        })
+        .populate('questions.submitted_by')
+        .exec();
+
+        res.status(200).json({ 
+            id: company._id,
+            questions: company.questions 
+        })
+    } catch(error) {
+        res.status(400).json({
+            error: 'Server error'
+        });
+    };
 };

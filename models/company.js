@@ -27,7 +27,20 @@ const companySchema = new mongoose.Schema({
     },
     pic: {
         type: Object
-    }
+    },
+    questions: [
+        {
+            text: String,
+            submitted_by: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Student', 
+            },
+            date: {
+                type: Date,
+                default: Date.now
+            }  
+        }
+    ]
 }, {
     timestamps: true
 });
