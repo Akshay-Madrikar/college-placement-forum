@@ -5,7 +5,9 @@ const { studentById } = require('../controllers/student');
 const { 
         companyById, 
         create, 
-        read, 
+        read,
+        update,
+        remove, 
         list,
         listAll, 
         listBySearch, 
@@ -17,6 +19,8 @@ const router = express.Router();
 
 router.post('/company/create/:studentId', requiredSignin, isAuth, isAdmin, create);
 router.get('/company/:companyId', read);
+router.put('/company/:companyId/:studentId', requiredSignin, isAuth, isAdmin, update);
+router.delete('/company/:companyId/:studentId', requiredSignin, isAuth, isAdmin, remove);
 router.get('/companies/search', listSearch);
 router.get('/companies', list);
 router.get('/companies/all', listAll);

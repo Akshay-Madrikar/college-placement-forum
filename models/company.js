@@ -19,14 +19,19 @@ const companySchema = new mongoose.Schema({
         required: true
     },
     openings: {
-        type: Number
+        type: Number,
+        default: 0
     },
     count_of_placed_students: {
         type: Number,
         default: 0
     },
     pic: {
-        type: Object
+        type: Object,
+        default: {
+            cloudinary_url: 'https://res.cloudinary.com/dexkk3lc4/image/upload/v1600092496/default_company.jpg',
+            cloudinary_id: 'default_company'
+        }
     },
     questions: [
         {

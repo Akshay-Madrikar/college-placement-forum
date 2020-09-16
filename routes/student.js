@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { studentById, readProfile } = require('../controllers/student');
+const { studentById, readProfile, updateProfile } = require('../controllers/student');
 const { requiredSignin, isAuth, isAdmin } = require('../controllers/auth');
 
 const router = express.Router();
@@ -13,6 +13,7 @@ router.get('/test/:studentId', requiredSignin, isAuth, isAdmin, (req, res) => {
 });
 
 router.get('/student/:studentId',requiredSignin, isAuth, readProfile);
+router.put('/student/:studentId',requiredSignin, isAuth, updateProfile);
 
 router.param('studentId', studentById);
 

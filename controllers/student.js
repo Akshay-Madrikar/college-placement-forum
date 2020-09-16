@@ -26,3 +26,32 @@ exports.readProfile = async (req, res) => {
         });
     };
 };
+
+
+exports.updateProfile = async(req, res) => {
+    try {
+        const { formData, pic } = req.body;
+        const { name, email, password} = formData;
+
+        const userFields = {};
+
+        if(name) userFields.name = name
+        if(email) userFields.email = email
+        if(password) userFields.password = password
+        if(pic) userFields.pic = pic
+
+        const student = await Student.findByIdAndUpdate(req.profile._id, {
+            $set: userFields
+        }, {
+            new: true
+        });
+        
+        res.status(200).json({
+            student
+        });
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
+};

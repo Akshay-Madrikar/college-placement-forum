@@ -26,6 +26,12 @@ exports.create = async(req, res) => {
     try {
         const { formData, pic } = req.body;
         const { name, description, industryName, openings, count_of_placed_students} = formData;
+        if(!name || !description || !industryName) {
+            return res.status(400).json({
+                error: 'Name, Description and Industry type fields are required!'
+            });
+        };
+
         const company = new Company({ name, description, industryName, openings, count_of_placed_students, pic });
         await company.save();
         res.status(201).json({
@@ -36,6 +42,51 @@ exports.create = async(req, res) => {
             error
         });
     }
+};
+
+exports.update = async(req, res) => {
+    try {
+        const { formData, pic } = req.body;
+        const { name, description, industryName, openings, count_of_placed_students} = formData;
+
+        const companyFields = {};
+
+        if(name) companyFields.name = name
+        if(description) companyFields.description = description
+        if(industryName) companyFields.industryName = industryName
+        if(openings) companyFields.openings = openings
+        if(count_of_placed_students) companyFields.count_of_placed_students = count_of_placed_students
+        if(pic) companyFields.pic = pic
+
+        const company = await Company.findByIdAndUpdate(req.company._id, {
+            $set: companyFields
+        }, {
+            new: true
+        });
+        
+        res.status(200).json({
+            company
+        });
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
+};
+
+exports.remove = async (req, res) => {
+    try {
+        const company = req.company;
+        await company.remove();
+        res.status(200).json({
+            company,
+            message: 'Company deleted successfully!'
+        });
+    } catch(error) {
+        res.status(400).json({
+            error
+        });
+    };
 };
 
 exports.list = async (req ,res) => {

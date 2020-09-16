@@ -34,9 +34,12 @@ const studentSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    appliedJobHistory: {
-        type: Array,
-        default: []
+    pic: {
+        type: Object,
+        default: {
+            cloudinary_url: 'https://res.cloudinary.com/dexkk3lc4/image/upload/v1600269201/user-profile.jpg',
+            cloudinary_id: 'user-profile'
+        }
     }
 }, {
     timestamps: true
