@@ -29,15 +29,17 @@ exports.readProfile = async (req, res) => {
 
 
 exports.updateProfile = async(req, res) => {
+    let userFields = {};
     try {
         const { formData, pic } = req.body;
-        const { name, email, password} = formData;
+        
+        if(formData) {
+            const { name, email, password} = formData;
+            if(name) userFields.name = name
+            if(email) userFields.email = email
+            if(password) userFields.password = password
+        }
 
-        const userFields = {};
-
-        if(name) userFields.name = name
-        if(email) userFields.email = email
-        if(password) userFields.password = password
         if(pic) userFields.pic = pic
 
         const student = await Student.findByIdAndUpdate(req.profile._id, {
@@ -45,9 +47,66 @@ exports.updateProfile = async(req, res) => {
         }, {
             new: true
         });
-        
+    
         res.status(200).json({
             student
+        });
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
+};
+
+exports.list = async (req, res) => {
+    try {
+        const students = await Student.find({});
+        if(!students) {
+            throw new Error();
+        }
+
+        res.status(201).json(students);
+    } catch(error) {
+        res.status(400).json({
+            error: 'Students not found'
+        });
+    };
+};
+
+exports.block = async(req, res) => {
+    try {
+        const student = await Student.findByIdAndUpdate(req.body.studentId, {
+            $set: {
+                block_status: 1
+            }
+        }, {
+            new: true
+        });
+        
+        res.status(200).json({
+            _id: student._id,
+            block_status: student.block_status
+        });
+    } catch (error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
+};
+
+exports.unblock = async(req, res) => {
+    try {
+        const student = await Student.findByIdAndUpdate(req.body.studentId, {
+            $set: {
+                block_status: 0
+            }
+        }, {
+            new: true
+        });
+        
+        res.status(200).json({
+            _id: student._id,
+            block_status: student.block_status
         });
     } catch (error) {
         res.status(400).json({

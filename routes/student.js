@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { studentById, readProfile, updateProfile } = require('../controllers/student');
+const { studentById, readProfile, updateProfile, list, block, unblock } = require('../controllers/student');
 const { requiredSignin, isAuth, isAdmin } = require('../controllers/auth');
 
 const router = express.Router();
@@ -12,8 +12,11 @@ router.get('/test/:studentId', requiredSignin, isAuth, isAdmin, (req, res) => {
     })
 });
 
+router.get('/students/all', list)
 router.get('/student/:studentId',requiredSignin, isAuth, readProfile);
 router.put('/student/:studentId',requiredSignin, isAuth, updateProfile);
+router.put('/block/student/:studentId/:studentId',requiredSignin, isAuth, isAdmin, block);
+router.put('/unblock/student/:studentId/:studentId',requiredSignin, isAuth, isAdmin, unblock);
 
 router.param('studentId', studentById);
 

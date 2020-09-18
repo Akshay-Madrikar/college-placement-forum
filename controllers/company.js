@@ -45,19 +45,22 @@ exports.create = async(req, res) => {
 };
 
 exports.update = async(req, res) => {
+    let companyFields = {};
     try {
         const { formData, pic } = req.body;
-        const { name, description, industryName, openings, count_of_placed_students} = formData;
+        if(formData) {
+            const { name, description, industryName, openings, count_of_placed_students} = formData;
+          
+            if(name) companyFields.name = name
+            if(description) companyFields.description = description
+            if(industryName) companyFields.industryName = industryName
+            if(openings) companyFields.openings = openings
+            if(count_of_placed_students) companyFields.count_of_placed_students = count_of_placed_students
 
-        const companyFields = {};
+        }
 
-        if(name) companyFields.name = name
-        if(description) companyFields.description = description
-        if(industryName) companyFields.industryName = industryName
-        if(openings) companyFields.openings = openings
-        if(count_of_placed_students) companyFields.count_of_placed_students = count_of_placed_students
-        if(pic) companyFields.pic = pic
-
+        if(pic) companyFields.pic = pic;
+        
         const company = await Company.findByIdAndUpdate(req.company._id, {
             $set: companyFields
         }, {

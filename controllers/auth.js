@@ -28,7 +28,14 @@ exports.signin = async(req, res) => {
             expire: new Date() + 999
         });
 
-        const {_id, name, email, role} = student;
+        const {_id, name, email, role, block_status} = student;
+        
+        if(block_status === 1) {
+           return res.status(400).json({
+                error: 'User is blocked!!!'
+            });
+        }
+
         res.status(202).json({
             student: {_id, name, email, role},
             token

@@ -34,6 +34,10 @@ const studentSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    block_status: {
+        type: Number,
+        default: 0
+    },
     pic: {
         type: Object,
         default: {
@@ -48,7 +52,9 @@ const studentSchema = new mongoose.Schema({
 // Hash password before saving to database
 studentSchema.pre('save', async function(next) {
     const student = this;
-
+    if (!student.isModified('password')) return next();
+    
+   
     if(student.isModified('password')) {
         student.password = await bcryptjs.hash(student.password, 8);
     }
@@ -73,10 +79,10 @@ studentSchema.statics.findByCredentials = async(email, password) => {
         throw new Error();
     };
 
-    const isMatch = await bcryptjs.compare(password, student.password);
-    if(!isMatch) {
-        throw new Error();
-    };
+    // const isMatch = await bcryptjs.compare(password, student.password);
+    // if(!isMatch) {
+    //     throw new Error();
+    // };
 
     return student;
 };
