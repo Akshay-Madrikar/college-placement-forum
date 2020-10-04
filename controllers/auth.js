@@ -1,13 +1,25 @@
 const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
+const sgMail = require('@sendgrid/mail');
 
 const Student = require('../models/student');
 require('dotenv').config();
+
+const sendgridApiKey = 'SG.' + process.env.SEND_GRID_API;
+sgMail.setApiKey(sendgridApiKey);
 
 exports.signup = async(req, res) => {
     try {
         const student = new Student(req.body);
         await student.save();
+
+        await sgMail.send({
+            to: student.email,
+            from: 'no-reply@collegeplacementforum.com',
+            subject: 'Thanks for joining!',
+            text: `Welcome to the app, ${student.name}. Explore companies and discuss placements.`
+        });
+
         res.status(201).json({
             student
         });

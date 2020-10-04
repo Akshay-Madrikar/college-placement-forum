@@ -14,7 +14,7 @@ router.get('/test/:studentId', requiredSignin, isAuth, isAdmin, (req, res) => {
 
 router.get('/students/all', list)
 router.get('/student/:studentId',requiredSignin, isAuth, readProfile);
-router.put('/student/:studentId',requiredSignin, isAuth, updateProfile);
+router.put('/student/update/:studentId',requiredSignin, isAuth, updateProfile);
 router.put('/block/student/:studentId/:studentId',requiredSignin, isAuth, isAdmin, block);
 router.put('/unblock/student/:studentId/:studentId',requiredSignin, isAuth, isAdmin, unblock);
 

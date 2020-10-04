@@ -7,7 +7,6 @@ const cors = require('cors');
 const authRouter = require('./routes/auth');
 const studentRouter = require('./routes/student');
 const industryRouter = require('./routes/industry');
-const departmentRouter = require('./routes/department');
 const companyRouter = require('./routes/company');
 const postRouter = require('./routes/post');
 const imageRouter = require('./utils/image_upload');
@@ -27,7 +26,6 @@ app.use("/api/v1", authRouter);
 app.use("/api/v1", studentRouter);
 app.use("/api/v1", companyRouter);
 app.use("/api/v1", industryRouter);
-app.use("/api/v1", departmentRouter);
 app.use("/api/v1", postRouter);
 app.use("/api/v1", imageRouter);
 

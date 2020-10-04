@@ -59,7 +59,7 @@ exports.update = async(req, res) => {
 
         }
 
-        if(pic) companyFields.pic = pic;
+        if(pic.cloudinary_id) companyFields.pic = pic;
         
         const company = await Company.findByIdAndUpdate(req.company._id, {
             $set: companyFields
