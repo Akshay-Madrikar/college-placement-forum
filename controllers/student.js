@@ -1,4 +1,5 @@
 const Student = require('../models/student');
+const { sendBlockEmail, sendUnblockEmail } = require('../emails/account');
 
 exports.studentById = async (req, res, next, id) => {
     try {
@@ -84,6 +85,8 @@ exports.block = async(req, res) => {
         }, {
             new: true
         });
+
+        sendBlockEmail( student.email, student.name );
         
         res.status(200).json({
             _id: student._id,
@@ -106,6 +109,8 @@ exports.unblock = async(req, res) => {
             new: true
         });
         
+        sendUnblockEmail( student.email, student.name );
+
         res.status(200).json({
             _id: student._id,
             block_status: student.block_status
