@@ -44,6 +44,12 @@ const studentSchema = new mongoose.Schema({
             cloudinary_url: 'https://res.cloudinary.com/dexkk3lc4/image/upload/v1600269201/user-profile.jpg',
             cloudinary_id: 'user-profile'
         }
+    },
+    resetToken: {
+        type: String
+    },
+    expireToken: {
+        type: Date
     }
 }, {
     timestamps: true

@@ -1,5 +1,7 @@
+const crypto = require('crypto');
+
 const Student = require('../models/student');
-const { sendBlockEmail, sendUnblockEmail } = require('../emails/account');
+const { sendBlockEmail, sendUnblockEmail, sendResetPasswordEmail } = require('../emails/account');
 
 exports.studentById = async (req, res, next, id) => {
     try {
@@ -121,3 +123,64 @@ exports.unblock = async(req, res) => {
         });
     }
 };
+
+exports.resetPassword = async(req, res) => {
+    crypto.randomBytes(32, async (error, buffer) => {
+        if(error){
+            console.log(error);
+        };
+
+        const token = buffer.toString('hex');
+
+        try{
+            const student = await Student.findOne({ email: req.body.email })
+            if(!student) {
+                return res.status(400).json({error: 'No student exists with that email!'});
+            }
+            student.resetToken = token;
+            student.expireToken = Date.now() + 3600000;
+            await student.save();
+    
+            sendResetPasswordEmail(student.email, student.name, token);
+    
+            res.status(200).json({
+                message: 'Check your email!'
+            });
+        } catch(error) {
+            res.status(400).json({
+                error: error.message
+            });
+        }
+    });
+}
+
+exports.newPassword = async(req, res) => {
+    try{
+        const newPassword = req.body.password;
+        const sentToken = req.body.token;
+    
+        const student = await Student.findOne({
+            resetToken: sentToken,
+            expireToken: {
+                $gt: Date.now()
+            }
+        });
+
+        if(!student) {
+            return res.status(400).json({error: 'Session expired!'});
+        }
+
+        student.password = newPassword;
+        student.resetToken = undefined;
+        student.expireToken = undefined;
+
+        await student.save();
+        res.status(201).json({
+            message: 'Password updated successfully!'
+        });
+    } catch(error) {
+        res.status(400).json({
+            error: error.message
+        });
+    }
+}

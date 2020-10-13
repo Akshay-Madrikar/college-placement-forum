@@ -31,8 +31,19 @@ const sendUnblockEmail = async (email, name) => {
     });
 };
 
+const sendResetPasswordEmail = async (email, name, token) => {
+    await sgMail.send({
+        to: email,
+        from: 'no-reply@collegeplacementforum.com',
+        subject: 'Reset password',
+        html: `<p>Hello ${name}, you've requested to reset your password</p> </br>
+        <h4>Click on this <a href="http://localhost:3000/reset-password/${token}">link</a> to reset your password</h4>`
+    });
+}; 
+
 module.exports = {
     sendWelcomeEmail,
     sendBlockEmail,
-    sendUnblockEmail
+    sendUnblockEmail,
+    sendResetPasswordEmail
 };
