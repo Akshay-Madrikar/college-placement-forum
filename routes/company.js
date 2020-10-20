@@ -12,7 +12,8 @@ const {
         listAll, 
         listBySearch, 
         listSearch,
-        addQuestion
+        addQuestion,
+        totalStudentsPlaced
     } = require('../controllers/company');
 
 const router = express.Router();
@@ -26,6 +27,7 @@ router.get('/companies', list);
 router.get('/companies/all', listAll);
 router.post("/companies/by/search", listBySearch);
 router.put("/company/:companyId/question/create/:studentId", requiredSignin, isAuth, addQuestion);
+router.put("/company/placed_count", totalStudentsPlaced);
 
 router.param('studentId', studentById)
 router.param('companyId', companyById);

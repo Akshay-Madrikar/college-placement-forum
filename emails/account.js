@@ -9,7 +9,11 @@ const sendWelcomeEmail = async (email, name) => {
         to: email,
         from: 'no-reply@collegeplacementforum.com',
         subject: 'Thanks for joining!',
-        text: `Welcome to the app, ${name}. Explore companies and discuss placements.`
+        html: `<h3>Welcome to the app, ${name}. Explore companies and discuss placements.<h3><br>
+                <h4>Congratulations! you have been shortlisted by placement forum cell.<br> 
+                Thank you for connecting with us. We hope you get placed in the coming future.<br>
+                Regards...<br> 
+                Akshay Madrikar, Saurabh Dhuri & Pranav Govindan</h4>`
     });
 };
 

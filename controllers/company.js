@@ -215,3 +215,27 @@ exports.addQuestion = async (req, res) => {
         });
     };
 };
+
+exports.totalStudentsPlaced = async (req, res) => {
+    try {
+        const total_count = await Company.aggregate([
+            {
+                $group: {
+                    total_count: {
+                        $sum: "count"
+                    }
+                }
+            }
+        ])
+        
+        if(!total_placed) {
+            throw new Error();
+        }
+
+        res.status(201).json(total_count);
+    } catch(error) {
+        res.status(400).json({
+            error: 'Companies not found'
+        });
+    };
+};
